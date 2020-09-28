@@ -399,6 +399,11 @@
 		setProperty("heatprot", 10)
 		setProperty("meleeprot", 1)
 
+/obj/item/clothing/shoes/swat/noslip
+	name = "combat boots"
+	desc = "A pair of boots with a non-slip sole."
+	c_flags = NOSLIP
+
 /obj/item/clothing/shoes/swat/heavy
 	name = "heavy military boots"
 	desc = "Fairly worn out military boots."

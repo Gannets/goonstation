@@ -197,6 +197,10 @@
 		materiel_stock += new/datum/materiel/utility/belt
 		materiel_stock += new/datum/materiel/utility/knife
 		materiel_stock += new/datum/materiel/utility/rpg_ammo
+		materiel_stock += new/datum/materiel/utility/noslip_boots
+		materiel_stock += new/datum/materiel/utility/nuke_decoy
+		materiel_stock += new/datum/materiel/utility/donk_pocket
+		materiel_stock += new/datum/materiel/utility/riot_shield
 
 	accepted_token()
 		src.current_sidearm_credits++
@@ -361,6 +365,18 @@
 	path = /obj/item/storage/pouch/rpg
 	catagory = "Utility"
 	description = "An additional four MPRT rockets."
+
+/datum/materiel/utility/noslip_boots
+	name = "noslip combat boots"
+	path = /obj/item/clothing/shoes/swat/noslip
+	catagory = "Utility"
+	description = "Non-slip combat boots"
+
+/datum/materiel/utility/riot_shield
+	name = ""
+	path = /obj/item/riot_barrier
+	catagory = "Utility"
+	description = ""
 
 // Requisition tokens
 

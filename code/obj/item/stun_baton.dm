@@ -747,7 +747,7 @@
 				M.move_laying = null
 			EE.deactivate()
 
-/obj/item/syndicate_barrier
+/obj/item/riot_barrier
 	name = "Aegis Riot Barrier"
 	desc = "A personal barrier."
 	icon = 'icons/obj/items/weapons.dmi'
