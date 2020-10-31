@@ -48,11 +48,14 @@
 		..()
 		var/wins = world.load_intra_round_value("nukie_win")
 		var/losses = world.load_intra_round_value("nukie_loss")
+		var/total = world.load_intra_round_value("total_rounds")
 		if(isnull(wins))
 			wins = 0
 		if(isnull(losses))
 			losses = 0
-		src.desc = "Successful missions: [wins]<br>\nUnsuccessful missions: [losses]"
+		if(isnull(total))
+			total = 0
+		src.desc = "Successful missions: [wins]<br>\nUnsuccessful missions: [losses]<br>\nTotal missions since last reset: [total]"
 
 	attack_hand(mob/user)
 		examine(user)

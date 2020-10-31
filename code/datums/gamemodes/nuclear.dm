@@ -220,6 +220,11 @@
 	SPAWN_DBG (rand(waittime_l, waittime_h))
 		send_intercept()
 
+	var/value = world.load_intra_round_value("total_rounds")
+	if(isnull(value))
+		value = 0
+	world.save_intra_round_value("total_rounds", value + 1)
+
 	return
 
 /datum/game_mode/nuclear/check_finished()
