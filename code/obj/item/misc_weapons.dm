@@ -1432,11 +1432,11 @@ obj/item/whetstone
 /obj/item/heavy_power_sword
 	name = "Hadar heavy power-sword"
 	desc = "A heavy cyalume saber variant, builds generator charge when used in combat & supports multiple attack types."
-	icon = 'icons/obj/items/weapons.dmi'
+	icon = 'icons/obj/64x32.dmi'
 	inhand_image_icon = 'icons/mob/inhand/hand_cswords.dmi'
 	wear_image_icon = 'icons/mob/back.dmi' //todo back sprites
-	icon_state = "hadar_sword-1" //todo new sprite
-	item_state = "d_sword1-R" //todo new sprite
+	icon_state = "hadar_sword1" //todo new sprite
+	item_state = "hadar_sword1" //todo new sprite
 	flags = ONBACK
 	hit_type = DAMAGE_CUT
 	tool_flags = TOOL_CUTTING | TOOL_CHOPPING
@@ -1449,6 +1449,7 @@ obj/item/whetstone
 	stamina_crit_chance = 15
 	pickup_sfx = "sound/items/blade_pull.ogg" // could use a cool lasery sfx
 	two_handed = 1
+	uses_multiple_icon_states = 1
 
 	var/mode = 1
 	var/maximum_force = 100
@@ -1474,18 +1475,23 @@ obj/item/whetstone
 		if (isturf(src.loc))
 			user.visible_message("<span class='alert'>[src] fdrops from [user]'s hands and powers down!</span>")
 			force = 25
-			playsound(M, "sound/")
 			return
 
 	attack_self(mob/user as mob)
-		switch(src.mode) // in-case i want to add more modes later
+		switch(src.mode) // switch in-case i want to add more modes later
 			if(1)
 				boutput(user, "<span class='alert'>[src] transforms enabling a ranged stab!</span>")
+				icon_state = "hadar_sword1"
+				item_state = "hadar_sword1"
 				src.mode = 2
+				user.update_inhands()
 				src.setItemSpecial(/datum/item_special/rangestab)
 			if(2)
 				boutput(user, "<span class='alert'>[src] transforms in order to swing wide!</span>")
+				icon_state = "hadar_sword2"
+				item_state = "hadar_sword2"
 				src.mode = 1
+				user.update_inhands()
 				src.setItemSpecial(/datum/item_special/swipe)
 		..()
 
