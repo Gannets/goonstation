@@ -163,6 +163,9 @@ var/global/Z4_ACTIVE = 0 //Used for mob processing purposes
 	grayshift
 		ckey = "grayshift"
 		name = "Office of Grayshift"
+	grifflez
+		ckey = "grifflez"
+		name = "Office of Grifflez"
 	hazoflabs
 		// ckey = ""
 		name = "Shared Office Space of Gerhazo and Flaborized"
@@ -358,6 +361,10 @@ var/global/Z4_ACTIVE = 0 //Used for mob processing purposes
 /area/retentioncenter/office
 	name = "NT Retention Center (office)"
 	icon_state = "orange"
+
+/area/retentioncenter/recycling
+	name = "NT Retention Center (Recycling)"
+	icon_state = "pink"
 
 ////////////////////////////
 
