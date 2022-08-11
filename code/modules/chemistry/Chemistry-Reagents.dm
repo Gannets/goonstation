@@ -54,6 +54,8 @@ datum
 		var/can_crack = 0 // used by organic chems
 		var/threshold_volume = null //defaults to not using threshold
 		var/threshold = null
+		/// Has this chem been in the person's bloodstream for at least one cycle?
+		var/initial_metabolized = FALSE
 
 		New()
 			..()
@@ -69,6 +71,10 @@ datum
 			return
 
 		proc/on_remove()
+			return
+
+		/// Called once on the first cycle that this chem is processed in the target
+		proc/initial_metabolize()
 			return
 
 		proc/check_threshold()
@@ -130,12 +136,11 @@ datum
 			switch(method)
 				if(TOUCH)
 					if (penetrates_skin && !("nopenetrate" in paramslist))
-						var/modifier = touch_modifier
+						var/percent_protection = clamp(GET_ATOM_PROPERTY(M, PROP_MOB_CHEMPROT), 0, 100)
+						var/modifier = 1
 						if(!src.pierces_outerwear)
-							for(var/atom in M.get_equipped_items())
-								if (istype(atom, /obj/item/clothing))
-									var/obj/item/clothing/C = atom
-									modifier -= (1 - C.permeability_coefficient)/3
+							modifier -= (percent_protection/100)
+						modifier *= touch_modifier
 
 						if(M.reagents)
 							M.reagents.add_reagent(self.id,volume*modifier,self.data)
@@ -221,6 +226,10 @@ datum
 
 			if (src.volume - deplRate <= 0)
 				src.on_mob_life_complete(M)
+
+			if (!initial_metabolized)
+				initial_metabolized = TRUE
+				initial_metabolize(M)
 
 			holder.remove_reagent(src.id, deplRate) //By default it slowly disappears.
 

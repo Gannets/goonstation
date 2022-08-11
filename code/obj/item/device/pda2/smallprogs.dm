@@ -62,14 +62,6 @@
 		dat += get_manifest()
 		dat += "<br>"
 
-		var/list/stored = list()
-		if(length(by_type[/obj/cryotron]))
-			var/obj/cryotron/cryo_unit = pick(by_type[/obj/cryotron])
-			for(var/L as anything in cryo_unit.stored_crew_names)
-				stored += "<i>- [L]<i><br>"
-		if(length(stored))
-			dat += "<b>In Cryogenic Storage:</b><hr>[jointext("", stored)]<br>"
-
 		return dat
 
 //Status Display
@@ -415,7 +407,7 @@ Code:
 /datum/computer/file/pda_program/door_control
 	name = "DoorMaster"
 	size = 8
-	var/id = 1.0
+	var/id = 1
 	var/last_toggle = 0
 
 	syndicate
@@ -1258,7 +1250,7 @@ Using electronic "Detomatix" BOMB program is perhaps less simple!<br>
 			if (station_name_changing)
 				var/nextName = lastStationNameChange + stationNameChangeDelay
 				if (nextName > world.timeofday)
-					alert("You must wait for the station naming coils to recharge! Did space school teach you nothing?!")
+					tgui_alert(usr, "You must wait for the station naming coils to recharge! Did space school teach you nothing?!", "Naming coils recharging")
 					usr.Browse(null, "window=stationnamechanger")
 					src.master.updateSelfDialog()
 					return

@@ -30,7 +30,7 @@
 	desc = "A breach in the spatial fabric. Extremely difficult to pass."
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "spat-h"
-	anchored = 1.0
+	anchored = 1
 	opacity = 1
 	density = 1
 	var/stabilized = 0
@@ -62,6 +62,12 @@
 		if(!istype(AM)) return
 		if(AM.client?.check_key(KEY_RUN) && src.stabilized)
 			src.try_pass(AM)
+
+	ex_act(severity)
+		return
+
+	meteorhit()
+		return
 
 	proc/try_pass(mob/user)
 		actions.start(new /datum/action/bar/icon/push_through_tear(user, src), user)

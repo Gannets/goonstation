@@ -110,11 +110,12 @@
 
 
 /obj/item/gun/energy/heavyion
-	name = "heavy ion blaster"
+	name = "\improper Tianfei heavy ion blaster"
+	icon = 'icons/obj/large/48x32.dmi'
 	icon_state = "heavyion"
 	item_state = "rifle"
-	force = 1.0
-	desc = "..."
+	force = 1
+	desc = "The XIANG|GIESEL model '天妃', a hefty laser-induced ionic disruptor with a self-charging radio-isotopic power core. Feared by rogue cyborgs across the Frontier."
 	charge_up = 15
 	can_dual_wield = 0
 	two_handed = 1
@@ -139,7 +140,7 @@
 	icon_state = "taser"
 	item_state = "taser"
 	uses_multiple_icon_states = 1
-	force = 1.0
+	force = 1
 	cell_type = /obj/item/ammo/power_cell/med_power
 	desc = "A weapon that produces an cohesive electrical charge that stuns its target."
 	muzzle_flash = "muzzle_flash_elec"
@@ -163,6 +164,10 @@
 	attack_self()
 		..()
 		UpdateIcon()
+		if(istype(src.current_projectile, /datum/projectile/energy_bolt/burst))
+			src.spread_angle = 6
+		else
+			src.spread_angle = initial(src.spread_angle)
 
 	borg
 		cell_type = /obj/item/ammo/power_cell/self_charging/disruptor
@@ -192,7 +197,7 @@
 	item_state = "laser"
 	uses_multiple_icon_states = 1
 	cell_type = /obj/item/ammo/power_cell/med_plus_power
-	force = 7.0
+	force = 7
 	desc = "A gun that produces a harmful laser, causing substantial damage."
 	muzzle_flash = "muzzle_flash_laser"
 
@@ -248,12 +253,12 @@
 
 //////////////////////////////////////// Phaser
 /obj/item/gun/energy/phaser_gun
-	name = "phaser gun"
+	name = "RP-4 phaser gun"
 	icon_state = "phaser-new"
 	uses_multiple_icon_states = 1
 	item_state = "phaser"
-	force = 7.0
-	desc = "A gun that produces a harmful phaser bolt, causing substantial damage."
+	force = 7
+	desc = "An energy weapon designed by Radnor Photonics. Popular among frontier adventurers and explorers."
 	muzzle_flash = "muzzle_flash_phaser"
 	cell_type = /obj/item/ammo/power_cell/med_power
 
@@ -271,6 +276,65 @@
 			src.icon_state = "phaser-new[ratio]"
 			return
 
+
+/obj/item/gun/energy/phaser_small
+	name = "RP-3 micro phaser"
+	icon_state = "phaser-tiny"
+	uses_multiple_icon_states = 1
+	item_state = "phaser"
+	force = 4
+	desc = "A diminutive sidearm produced by Radnor Photonics. It's not much, but it might just save your life."
+	muzzle_flash = "muzzle_flash_phaser"
+	cell_type = /obj/item/ammo/power_cell/med_power
+
+	New()
+		set_current_projectile(new/datum/projectile/laser/light/tiny)
+		projectiles = list(current_projectile)
+		..()
+
+	update_icon()
+		..()
+		var/list/ret = list()
+		if(SEND_SIGNAL(src, COMSIG_CELL_CHECK_CHARGE, ret) & CELL_RETURNED_LIST)
+			var/ratio = min(1, ret["charge"] / ret["max_charge"])
+			ratio = round(ratio, 0.25) * 100
+			src.icon_state = "phaser-tiny[ratio]"
+			return
+
+
+
+/obj/item/gun/energy/phaser_huge
+	name = "RP-5 macro phaser"
+	icon_state = "phaser-xl"
+	uses_multiple_icon_states = 1
+	item_state = "phaser"
+	force = 10
+	desc = "The largest phaser from Radnor Photonics. A big gun for big problems."
+	muzzle_flash = "muzzle_flash_phaser"
+	cell_type = /obj/item/ammo/power_cell/higherish_power
+	shoot_delay = 10
+	charge_up = 5
+	can_dual_wield = FALSE
+
+	New()
+		set_current_projectile(new/datum/projectile/laser/light/huge) // light/huge - whatev!!!! this should probably be refactored
+		projectiles = list(current_projectile)
+		..()
+
+	update_icon()
+		..()
+		var/list/ret = list()
+		if(SEND_SIGNAL(src, COMSIG_CELL_CHECK_CHARGE, ret) & CELL_RETURNED_LIST)
+			var/ratio = min(1, ret["charge"] / ret["max_charge"])
+			ratio = round(ratio, 0.25) * 100
+			src.icon_state = "phaser-xl[ratio]"
+			return
+
+
+
+
+
+
 ///////////////////////////////////////Rad Crossbow
 /obj/item/gun/energy/crossbow
 	name = "mini rad-poison-crossbow"
@@ -279,7 +343,7 @@
 	uses_multiple_icon_states = 1
 	w_class = W_CLASS_SMALL
 	item_state = "crossbow"
-	force = 4.0
+	force = 4
 	throw_speed = 3
 	throw_range = 10
 	rechargeable = 0 // Cannot be recharged manually.
@@ -287,6 +351,7 @@
 	from_frame_cell_type = /obj/item/ammo/power_cell/self_charging/slowcharge
 	projectiles = null
 	is_syndicate = 1
+	mats = list("MET-1"=5, "CON-2"=5, "POW-2"=10)
 	silenced = 1 // No conspicuous text messages, please (Convair880).
 	hide_attack = 1
 	custom_cell_max_capacity = 100 // Those self-charging ten-shot radbows were a bit overpowered (Convair880)
@@ -318,7 +383,7 @@
 	cell_type = /obj/item/ammo/power_cell/med_plus_power
 	desc = "Its a gun that has two modes, stun and kill"
 	item_state = "egun"
-	force = 5.0
+	force = 5
 	mats = list("MET-1"=15, "CON-1"=5, "POW-1"=5)
 	var/nojobreward = 0 //used to stop people from scanning it and then getting both a lawbringer/sabre AND an egun.
 	muzzle_flash = "muzzle_flash_elec"
@@ -326,6 +391,7 @@
 	New()
 		set_current_projectile(new/datum/projectile/energy_bolt)
 		projectiles = list(current_projectile,new/datum/projectile/laser)
+		RegisterSignal(src, COMSIG_ATOM_ANALYZE, .proc/noreward)
 		..()
 	update_icon()
 		..()
@@ -350,10 +416,8 @@
 		UpdateIcon()
 		M.update_inhands()
 
-	attackby(obj/item/W as obj, mob/user as mob)
-		if (istype(W, /obj/item/electronics/scanner))
-			nojobreward = 1
-		..()
+	proc/noreward()
+		src.nojobreward = 1
 
 //////////////////////// nanotrasen gun
 //Azungar's Nanotrasen inspired Laser Assault Rifle for RP gimmicks
@@ -362,7 +426,7 @@
 	icon_state = "ntneutral100"
 	desc = "Rather futuristic assault rifle with two firing modes."
 	item_state = "ntgun"
-	force = 10.0
+	force = 10
 	contraband = 8
 	two_handed = 1
 	spread_angle = 6
@@ -398,15 +462,15 @@
 	desc = "A weapon that produces an cohesive electrical charge that stuns its target. Now in a shotgun format."
 	item_state = "tasers"
 	cell_type = /obj/item/ammo/power_cell/med_power
-	force = 8.0
+	force = 12
 	two_handed = 1
 	can_dual_wield = 0
-	shoot_delay = 6
+	shoot_delay = 8 DECI SECONDS
 	muzzle_flash = "muzzle_flash_elec"
 
 	New()
 		set_current_projectile(new/datum/projectile/special/spreader/tasershotgunspread)
-		projectiles = list(current_projectile,new/datum/projectile/energy_bolt/tasershotgun)
+		projectiles = list(current_projectile,new/datum/projectile/energy_bolt/tasershotgunslug)
 		..()
 
 	update_icon()
@@ -418,13 +482,6 @@
 			set_icon_state("tasers[ratio]")
 			return
 
-	attack_self()
-		..()
-		if(istype(current_projectile, /datum/projectile/energy_bolt))
-			shoot_delay = 4
-		else
-			shoot_delay = 6
-
 
 ////////////////////////////////////VUVUV
 /obj/item/gun/energy/vuvuzela_gun
@@ -435,6 +492,7 @@
 	desc = "BZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZT, *fart*"
 	cell_type = /obj/item/ammo/power_cell/med_power
 	is_syndicate = 1
+	mats = list("MET-1"=5, "CON-2"=5, "POW-2"=10)
 
 	New()
 		set_current_projectile(new/datum/projectile/energy_bolt_v)
@@ -457,7 +515,7 @@
 	item_state = "crabgun-world"
 	inhand_image_icon = 'icons/obj/crabgun.dmi'
 	w_class = W_CLASS_BULKY
-	force = 12.0
+	force = 12
 	throw_speed = 8
 	throw_range = 12
 	rechargeable = 0
@@ -486,14 +544,15 @@
 
 ////////////////////////////////////Wave Gun
 /obj/item/gun/energy/wavegun
-	name = "wave gun"
+	name = "\improper Sancai wave gun"
 	icon = 'icons/obj/items/gun.dmi'
+	desc = "The versatile XIANG|GIESEL model '三才' with three monlethal functions: inverse '炎帝', transverse '地皇' and reflective '天皇' ."
 	icon_state = "wavegun100"
 	item_state = "wave"
 	cell_type = /obj/item/ammo/power_cell/med_power
 	uses_multiple_icon_states = 1
 	m_amt = 4000
-	force = 6.0
+	force = 6
 	muzzle_flash = "muzzle_flash_wavep"
 
 	New()
@@ -534,7 +593,7 @@
 	icon = 'icons/obj/items/gun.dmi'
 	icon_state = "bfg"
 	m_amt = 4000
-	force = 6.0
+	force = 6
 	desc = "I think it stands for Banned For Griefing?"
 	cell_type = /obj/item/ammo/power_cell/high_power
 
@@ -564,7 +623,7 @@
 	uses_multiple_icon_states = 1
 	w_class = W_CLASS_NORMAL
 	item_state = "gun"
-	force = 10.0
+	force = 10
 	throw_speed = 2
 	throw_range = 10
 	mats = 0
@@ -630,7 +689,7 @@
 			user.show_text("Error: no working teleporters detected.", "red")
 			return
 
-		var/t1 = input(user, "Please select a teleporter to lock in on.", "Target Selection") in L
+		var/t1 = tgui_input_list(user, "Please select a teleporter to lock in on.", "Target Selection", L)
 		if ((user.equipped() != src) || user.stat || user.restrained())
 			return
 		if (t1 == "None (Cancel)")
@@ -663,7 +722,7 @@
 			user.show_text("Error: couldn't establish connection to selected teleporter.", "red")
 			return
 
-	attack(mob/M as mob, mob/user as mob)
+	attack(mob/M, mob/user)
 		if (!src.our_target)
 			user.show_text("Error: no target set. Please select a teleporter first.", "red")
 			return
@@ -703,7 +762,7 @@
 	icon_state = "ghost"
 	w_class = W_CLASS_NORMAL
 	item_state = "gun"
-	force = 10.0
+	force = 10
 	throw_speed = 2
 	throw_range = 10
 	mats = 0
@@ -722,7 +781,7 @@
 	icon = 'icons/obj/items/gun_mod.dmi'
 	icon_state = "pistol"
 	w_class = W_CLASS_NORMAL
-	force = 5.0
+	force = 5
 	mats = 0
 	cell_type = /obj/item/ammo/power_cell/self_charging/medium
 	from_frame_cell_type = /obj/item/ammo/power_cell/self_charging/disruptor
@@ -795,7 +854,7 @@
 	icon_state = "smg"
 	can_dual_wield = 0
 	w_class = W_CLASS_NORMAL
-	force = 7.0
+	force = 7
 	mats = 0
 	cell_type = /obj/item/ammo/power_cell/self_charging/medium
 
@@ -908,7 +967,7 @@
 	name = "owl gun"
 	desc = "Its a gun that has two modes, Owl and Owler"
 	item_state = "gun"
-	force = 5.0
+	force = 5
 	icon_state = "ghost"
 	uses_multiple_icon_states = 1
 	cell_type = /obj/item/ammo/power_cell/med_power
@@ -930,7 +989,7 @@
 	name = "owl gun"
 	desc = "Hoot!"
 	item_state = "gun"
-	force = 5.0
+	force = 5
 	icon_state = "ghost"
 	uses_multiple_icon_states = 1
 	cell_type = /obj/item/ammo/power_cell/med_power
@@ -953,7 +1012,7 @@
 	name = "frog gun"
 	item_state = "gun"
 	m_amt = 1000
-	force = 0.0
+	force = 0
 	icon_state = "frog"
 	cell_type = /obj/item/ammo/power_cell/self_charging/big //gotta have power for the frog
 	desc = "It appears to be shivering and croaking in your hand. How creepy." //it must be unhoppy :^)
@@ -968,7 +1027,7 @@
 /obj/item/gun/energy/shrinkray
 	name = "shrink ray"
 	item_state = "gun"
-	force = 5.0
+	force = 5
 	icon_state = "ghost"
 	cell_type = /obj/item/ammo/power_cell/med_power
 	uses_multiple_icon_states = 1
@@ -996,7 +1055,7 @@
 /obj/item/gun/energy/stinkray
 	name = "stink ray"
 	item_state = "gun"
-	force = 5.0
+	force = 5
 	icon_state = "ghost"
 	cell_type = /obj/item/ammo/power_cell/med_power
 	uses_multiple_icon_states = 1
@@ -1020,7 +1079,7 @@
 	icon = 'icons/obj/items/gun.dmi'
 	icon_state = "airzooka"
 	m_amt = 4000
-	force = 0.0
+	force = 0
 	cell_type = /obj/item/ammo/power_cell/high_power
 	desc = "It's humming with some sort of disturbing energy. Do you really wanna hold this?"
 
@@ -1043,7 +1102,7 @@
 	item_state = "bullpup"
 	var/base_item_state = "bullpup"
 	uses_multiple_icon_states = 1
-	force = 5.0
+	force = 5
 	cell_type = /obj/item/ammo/power_cell/self_charging/mediumbig
 	muzzle_flash = "muzzle_flash_plaser"
 	mats = list("MET-3"=7, "CRY-1"=13, "POW-2"=10)
@@ -1102,7 +1161,7 @@
 	icon_state = "pickpocket"
 	w_class = W_CLASS_SMALL
 	item_state = "pickpocket"
-	force = 4.0
+	force = 4
 	throw_speed = 3
 	throw_range = 10
 	rechargeable = 0 // Cannot be recharged manually.
@@ -1110,6 +1169,7 @@
 	from_frame_cell_type = /obj/item/ammo/power_cell/self_charging/slowcharge
 	projectiles = null
 	is_syndicate = 1
+	mats = list("MET-1"=5, "CON-2"=5, "POW-2"=10)
 	silenced = 1
 	hide_attack = 1
 	mats = 100 //yeah no, you can do it if you REALLY want to
@@ -1132,7 +1192,7 @@
 			else
 				. += "It's not holding anything."
 
-	attack_hand(mob/user as mob)
+	attack_hand(mob/user)
 		if (src.loc == user && (src == user.l_hand || src == user.r_hand))
 			if (heldItem)
 				boutput(user, "You remove \the [heldItem.name] from the gun.")
@@ -1144,7 +1204,7 @@
 		else
 			return ..()
 
-	attackby(obj/item/I as obj, mob/user as mob)
+	attackby(obj/item/I, mob/user)
 		if (I.cant_drop) return
 		if (heldItem)
 			boutput(user, "The gun is already holding [heldItem.name].")
@@ -1156,7 +1216,7 @@
 			tooltip_rebuild = 1
 		return ..()
 
-	attack(mob/M as mob, mob/user as mob)
+	attack(mob/M, mob/user)
 		if (istype(current_projectile, /datum/projectile/pickpocket/steal) && heldItem)
 			boutput(user, "Cannot steal while gun is holding something!")
 			return
@@ -1207,13 +1267,14 @@
 	item_state = "alastor"
 	icon = 'icons/obj/large/38x38.dmi'
 	uses_multiple_icon_states = 1
-	force = 7.0
+	force = 7
 	can_dual_wield = 0
 	two_handed = 1
 	cell_type = /obj/item/ammo/power_cell/med_power
 	desc = "A gun that produces a harmful laser, causing substantial damage."
 	muzzle_flash = "muzzle_flash_laser"
 	is_syndicate = 1
+	mats = list("MET-2"=15, "CON-2"=10, "POW-2"=10)
 
 	New()
 		set_current_projectile(new/datum/projectile/laser/alastor)
@@ -1260,7 +1321,7 @@
 		// projectiles = list(current_projectile,new/datum/projectile/bullet/revolver_38/lb,new/datum/projectile/bullet/smoke,new/datum/projectile/bullet/tranq_dart/law_giver,new/datum/projectile/bullet/flare,new/datum/projectile/bullet/aex/lawbringer,new/datum/projectile/bullet/clownshot)
 
 		src.indicator_display = image('icons/obj/items/gun.dmi', "")
-		asign_name(M)
+		assign_name(M)
 
 		..()
 
@@ -1268,10 +1329,10 @@
 		indicator_display = null
 		..()
 
-	attack_hand(mob/user as mob)
+	attack_hand(mob/user)
 		if (!owner_prints)
-			boutput(user, "<span class='alert'>[src] has accepted your fingerprint ID. You are its owner!</span>")
-			asign_name(user)
+			boutput(user, "<span class='alert'>[src] has accepted your DNA string. You are its owner!</span>")
+			assign_name(user)
 		..()
 
 
@@ -1280,16 +1341,16 @@
 	attack_self(mob/user as mob)
 		src.add_fingerprint(user)
 		if (!owner_prints)
-			boutput(user, "<span class='alert'>[src] has accepted your fingerprint ID. You are its owner!</span>")
-			asign_name(user)
+			boutput(user, "<span class='alert'>[src] has accepted your DNA string. You are its owner!</span>")
+			assign_name(user)
 		else
 			boutput(user, "<span class='notice'>There don't seem to be any buttons on [src] to press.</span>")
 
-	proc/asign_name(var/mob/M)
+	proc/assign_name(var/mob/M)
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
 			if (H.bioHolder)
-				owner_prints = H.bioHolder.fingerprints
+				owner_prints = H.bioHolder.Uid
 				src.name = "HoS [H.real_name]'s Lawbringer"
 				tooltip_rebuild = 1
 
@@ -1297,18 +1358,19 @@
 	hear_talk(mob/M as mob, msg, real_name, lang_id)
 		var/turf/T = get_turf(src)
 		if (M in range(1, T))
-			src.talk_into(M, msg, null, real_name, lang_id)
+			src.talk_into(M, msg, real_name, lang_id)
 
 	//can only handle one name at a time, if it's more it doesn't do anything
 	talk_into(mob/M as mob, msg, real_name, lang_id)
 		//Do I need to check for this? I can't imagine why anyone would pass the wrong var here...
 		if (!islist(msg))
 			return
-
+		if (lang_id != "english")
+			return
 		//only work if the voice is the same as the voice of your owner fingerprints.
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if (owner_prints && (H.bioHolder.fingerprints != owner_prints))
+			if (owner_prints && (H.bioHolder.Uid != owner_prints))
 				are_you_the_law(M, msg[1])
 				return
 		else
@@ -1455,7 +1517,7 @@
 	// Checks if the gun can shoot based on the fingerprints of the shooter.
 	//returns true if the prints match or there are no prints stored on the gun(emagged). false if it fails
 	proc/fingerprints_can_shoot(var/mob/user)
-		if (!owner_prints || (user.bioHolder.fingerprints == owner_prints))
+		if (!owner_prints || (user.bioHolder.Uid == owner_prints))
 			return 1
 		return 0
 
@@ -1504,7 +1566,7 @@
 			break
 		if (F == get_turf(user))
 			continue
-		if (get_dist(user,F) > range)
+		if (GET_DIST(user,F) > range)
 			continue
 		tfireflash(F,0.5,2400)
 
@@ -1545,7 +1607,7 @@
 	icon_state = "crossbow" //placeholder, would prefer a custom wasp themed icon
 	w_class = W_CLASS_SMALL
 	item_state = "crossbow" //ditto
-	force = 4.0
+	force = 4
 	throw_speed = 3
 	throw_range = 10
 	rechargeable = 0 // Cannot be recharged manually.
@@ -1553,6 +1615,7 @@
 	from_frame_cell_type = /obj/item/ammo/power_cell/self_charging/slowcharge
 	projectiles = null
 	is_syndicate = 1
+	mats = list("MET-1"=5, "CON-2"=5, "POW-2"=10)
 	silenced = 1
 	custom_cell_max_capacity = 100
 
@@ -1642,12 +1705,54 @@
 		shotcount = 0
 		. = ..()
 
+/obj/item/gun/energy/cornicen3
+	name = "\improper Cornicen III"
+	desc = "It's a shotgun? Or an assault rifle? You can't tell."
+	icon = 'icons/obj/large/48x32.dmi'
+	muzzle_flash = "muzzle_flash_bluezap"
+	icon_state = "cornicen_close"
+	item_state = "ntgun2"
+	w_class = W_CLASS_NORMAL		//for clarity
+	two_handed = TRUE
+	force = 9
+	cell_type = /obj/item/ammo/power_cell/self_charging/big
+	from_frame_cell_type = /obj/item/ammo/power_cell/self_charging/mediumbig
+	can_swap_cell = 0
+	rechargeable = 0
+	shoot_delay = 8 DECI SECONDS
+	spread_angle = 3
+	var/extended = FALSE
+
+	New()
+		set_current_projectile(new/datum/projectile/special/spreader/plasma_spreader)
+		projectiles = list(current_projectile,new/datum/projectile/laser/plasma/burst)
+		..()
+
+	update_icon()
+		..()
+		if(!src.extended)
+			src.icon_state = "cornicen_close"
+			src.item_state = "cornicen"
+			w_class = W_CLASS_NORMAL
+		else
+			src.icon_state = "cornicen_ext"
+			src.item_state = "cornicen_ext"
+			w_class = W_CLASS_BULKY
+
+	attack_self(var/mob/M)
+		..()
+		src.extended = !src.extended
+		UpdateIcon()
+		if(src.extended)
+			flick("cornicen_open", src)
+		M.update_inhands()
+
 /obj/item/gun/energy/tasersmg
 	name = "taser SMG"
 	icon_state = "tsmg_burst100"
 	desc = "A weapon that produces an cohesive electrical charge that stuns its target, capable of firing in two shot burst or full auto configurations."
 	item_state = "tsmg"
-	force = 5.0
+	force = 5
 	two_handed = 1
 	can_dual_wield = 0
 	cell_type = /obj/item/ammo/power_cell/med_power
@@ -1686,7 +1791,7 @@
 	icon_state = "raygun"
 	desc = "A weapon that looks vaguely like a cheap toy and is definitely unsafe."
 	item_state = "raygun"
-	force = 5.0
+	force = 5
 	can_dual_wield = 0
 	muzzle_flash = "muzzle_flash_laser"
 

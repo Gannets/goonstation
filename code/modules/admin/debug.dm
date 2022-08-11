@@ -304,7 +304,7 @@ var/global/debug_messages = 0
 		var/datum/data_input_result/arg = src.input_data(list(DATA_INPUT_TEXT, DATA_INPUT_NUM, DATA_INPUT_BOOL, DATA_INPUT_TYPE, DATA_INPUT_JSON, DATA_INPUT_REF, DATA_INPUT_MOB_REFERENCE, \
 										DATA_INPUT_ATOM_ON_CURRENT_TURF, DATA_INPUT_ICON, DATA_INPUT_COLOR, DATA_INPUT_FILE, DATA_INPUT_REFPICKER, DATA_INPUT_LIST_BUILD, DATA_INPUT_NULL, \
 										DATA_INPUT_NEW_INSTANCE) \
-										+ custom_options, custom_type_title = arginfo ? arginfo[i][ARG_INFO_DESC] + ":" : "Type of Argument #[i]", \
+										+ custom_options, default = arginfo ? arginfo[i][ARG_INFO_DEFAULT] : null, custom_type_title = arginfo ? arginfo[i][ARG_INFO_DESC] + ":" : "Type of Argument #[i]", \
 										custom_type_message =  arginfo ? "Argument #[i]: " + arginfo[i][ARG_INFO_NAME] : "Variable Type", \
 										default_type = arginfo?[i][ARG_INFO_TYPE])
 
@@ -1077,11 +1077,11 @@ proc/display_camera_paths()
 	ADMIN_ONLY
 
 	if(!islist(usr.client.color))
-		usr.client.color = list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1)
+		src.set_color()
 
 	var/list/newColorMatrix = generate_random_value_list(2, 20)
+	src.animate_color(newColorMatrix)
 
-	animate(usr.client, color=newColorMatrix, time=5, easing=SINE_EASING)
 	var/matrixTable = "<table>"
 	var/isBigMatrix = (newColorMatrix.len == 20)
 	var/rows = isBigMatrix ? 5 : 4
@@ -1122,8 +1122,7 @@ var/datum/flock/testflock
 	if(isnull(testflock))
 		testflock = new()
 
-	var/chui/window/flockpanel/panel = testflock.panel
-	panel.Subscribe(usr.client)
+	testflock.ui_interact(usr, testflock.flockpanel)
 
 /client/proc/clear_string_cache()
 	set name = "Clear String Cache"
@@ -1179,12 +1178,12 @@ var/datum/flock/testflock
 
 	Topic(href, href_list)
 		if(!islist(usr.client.color))
-			usr.client.color = list(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1)
+			usr.client.set_color()
 
 		// as somepotato pointed out this form is very insecure, so let's do some serverside verification that we got what we wanted
 		var/sanitised = sanitize(strip_html(href_list["matrix"]))
 		var/list/matrixStrings = splittext(sanitised, ",")
-		// we are expecting 12 strings, so abort if we don't have that many
+		// we are expecting 20 strings, so abort if we don't have that many
 		if(matrixStrings.len != 20)
 			return
 
@@ -1197,15 +1196,15 @@ var/datum/flock/testflock
 
 			if(href_list["animate"] == "y")
 				for(var/client/c)
-					animate(c, color=matrix, time=5, easing=SINE_EASING)
+					c.animate_color(matrix)
 			else
 				for(var/client/c)
-					c.color = matrix
+					c.set_color(matrix)
 		else
 			if(href_list["animate"] == "y")
-				animate(usr.client, color=matrix, time=5, easing=SINE_EASING)
+				usr.client.animate_color(matrix)
 			else
-				usr.client.color = matrix
+				usr.client.set_color(matrix)
 
 	proc/callJsFunc(var/client, var/funcName, var/list/params)
 		var/paramsJS = list2params(params)
