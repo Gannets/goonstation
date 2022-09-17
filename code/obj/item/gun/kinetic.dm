@@ -1392,6 +1392,60 @@ ABSTRACT_TYPE(/obj/item/gun/kinetic)
 			src.UpdateIcon()
 			return
 
+/obj/item/gun/kinetic/mrls
+	desc = "A rocket-propelled grenade launcher licensed by the Space Irish Republican Army."
+	name = "\improper MRLS-6"
+	icon = 'icons/obj/large/64x32.dmi'
+	inhand_image_icon = 'icons/mob/inhand/hand_weapons.dmi'
+	icon_state = "rpg7"
+	uses_multiple_icon_states = 1
+	item_state = "rpg7"
+	wear_image_icon = 'icons/mob/clothing/back.dmi'
+	flags = ONBACK
+	w_class = W_CLASS_BULKY
+	throw_speed = 2
+	throw_range = 4
+	force = MELEE_DMG_LARGE
+	contraband = 8
+	ammo_cats = list(AMMO_ROCKET_ALL)
+	max_ammo_capacity = 6
+	can_dual_wield = 0
+	two_handed = 1
+	muzzle_flash = "muzzle_flash_launch"
+	has_empty_state = 1
+	default_magazine = /obj/item/ammo/bullets/mrls
+	ammobag_magazines = list(/obj/item/ammo/bullets/mrls)
+	ammobag_spec_required = TRUE
+	ammobag_restock_cost = 6
+
+	New()
+		START_TRACKING_CAT(TR_CAT_NUKE_OP_STYLE)
+		ammo = new default_magazine
+		ammo.amount_left = 0 // Spawn empty.
+		set_current_projectile(new /datum/projectile/bullet/rpg/homing/mrls)
+		..()
+
+	update_icon()
+		..()
+		if (src.ammo.amount_left < 1)
+			src.item_state = "rpg7_empty"
+		else
+			src.item_state = "rpg7"
+		if (ishuman(src.loc))
+			var/mob/living/carbon/human/H = src.loc
+			H.update_inhands()
+
+	disposing()
+		STOP_TRACKING_CAT(TR_CAT_NUKE_OP_STYLE)
+		..()
+
+	loaded
+		New()
+			..()
+			ammo.amount_left = 1
+			src.UpdateIcon()
+			return
+
 /obj/item/gun/kinetic/antisingularity
 	desc = "An experimental rocket launcher designed to deliver various payloads in rocket format."
 	name = "\improper Singularity Buster rocket launcher"
